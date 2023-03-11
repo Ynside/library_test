@@ -30,6 +30,7 @@ namespace library
             if (reader.HasRows)
             {
                 reader.Read();
+
                 if (reader.Read() != false) 
                 {
                     for (int i = 0; i <= reader.Depth; i++)
