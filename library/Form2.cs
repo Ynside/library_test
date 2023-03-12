@@ -10,11 +10,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace library
 {
     public partial class Form2 : Form
     {
+        
         string[] kontrol = new string[8];
 
         public void veriCek()
@@ -42,14 +44,14 @@ namespace library
                     }
                 }else
                 {
-                    MessageBox.Show("Database bağlantı hatası!");
+                    
                 }
                 
  
             }
             else
             {
-                MessageBox.Show("Hata! Sütun yok.");
+                
             }
             reader.Close();
 
@@ -128,6 +130,7 @@ namespace library
             adapter = new MySqlDataAdapter("SELECT *FROM librarypanel", mysqlbaglan);
             adapter.Fill(dt);
             dataGridView1.DataSource = dt;
+            
 
         }
 
@@ -168,6 +171,45 @@ namespace library
             adapter.Fill(dt);
             dataGridView2.DataSource = dt;
 
+        }
+        
+
+        public void VeriSil()
+        {
+            //Farklı bir sütunu seçtiğimizde hata alıyoruz, düzeltilecek.
+
+           // if (dataGridView2.SelectedRows[0].Cells.Count > 0)
+            {
+                string sql = "Delete From librarypanel2 Where kitapNO=@kNO1";
+                cmd = new MySqlCommand(sql, mysqlbaglan);
+                cmd.Parameters.AddWithValue("@kNO1", Convert.ToInt32(dataGridView2.SelectedRows[0].Cells[3].Value));
+
+                cmd.ExecuteNonQuery();
+
+                VeriGetirK();
+
+                MessageBox.Show("Kayıt silindi.");
+            }
+            //else
+            {
+                //MessageBox.Show("Silinecek sütunu seçmediniz!");
+            }
+              
+            
+            
+
+
+
+        }
+        private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+
+                int index = e.RowIndex;
+                
+                DataGridViewRow row = dataGridView2.Rows[index];
+                kNO1.Text = row.Cells[0].Value.ToString();
+                
+            
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -213,7 +255,7 @@ namespace library
             }
             else
             {
-                Console.WriteLine("No rows found.");
+                MessageBox.Show("Veritabanı hatası!");
             }
             reader.Close();
 
@@ -239,7 +281,7 @@ namespace library
                 cmd.Parameters.AddWithValue("@azar", azar.Text);
                 cmd.Parameters.AddWithValue("kNO2", kNO2.Text);
                 cmd.ExecuteNonQuery();
-                MessageBox.Show("Kitap Güncellendi!");
+                MessageBox.Show("Kitap için girdiğiniz değerler güncellendi!");
                 VeriGetirK();
                 veriCek();
             }
@@ -256,6 +298,11 @@ namespace library
         private void button1_Click(object sender, EventArgs e)
         {
             veriCek();
+        }
+
+        private void deleteBtn_Click(object sender, EventArgs e)
+        {
+            VeriSil();
         }
     }
 }
